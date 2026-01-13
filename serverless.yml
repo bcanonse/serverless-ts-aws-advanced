@@ -3,15 +3,18 @@ service: crud-services
 provider:
   name: aws
   runtime: nodejs20.x
+  profile: personal
+  stage: ${opt:stage, 'dev'}
+  environment:
+    NODE_ENV: production
   iam:
     role:
       statements:
         - Effect: Allow
-          Action: 'dynamodb:*'
+          Action: "dynamodb:*"
           Resource: !GetAtt usersTable.Arn
 
 plugins:
-  - serverless-esbuild
   - serverless-offline
   - serverless-dynamodb
 
@@ -20,15 +23,18 @@ package:
     - .env/**
     - node_modules/**
     - .github/**
+    - .husky/**
 
-custom:
+build:
   esbuild:
     minify: true
+    bundle: true
+    platform: node
+    target: node20
     external:
       - aws-sdk
-    watch:
-      pattern: ['./index.ts', 'src/**/*.ts']
-      ignore: ['.serverless/**/*', '.build']
+
+custom:
   dynamodb:
     # If you only want to use DynamoDB Local in some stages, declare them here
     stages:

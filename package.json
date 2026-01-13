@@ -10,8 +10,7 @@
     "start:offline": "sls offline start --stage dev --reloadHandler",
     "deploy:dev": "sls deploy --stage dev --verbose",
     "remove:deploy:dev": "sls remove --verbose",
-    "precommit": "npm run lint & npm run prettier",
-    "prepare": "husky install"
+    "precommit": "npm run lint & npm run prettier"
   },
   "keywords": [],
   "author": "Bryan Canon",
