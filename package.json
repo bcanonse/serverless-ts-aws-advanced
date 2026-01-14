@@ -9,6 +9,7 @@
     "dynamodb:install": "sls dynamodb install",
     "start:offline": "sls offline start --stage dev --reloadHandler",
     "deploy:dev": "sls deploy --stage dev --verbose",
+    "deploy:prod": "sls deploy --stage prod --verbose",
     "remove:deploy:dev": "sls remove --verbose",
     "precommit": "npm run lint & npm run prettier"
   },
@@ -33,9 +34,9 @@
     "eslint-plugin-promise": "^6.6.0",
     "husky": "^8.0.0",
     "prettier": "^3.3.3",
-    "serverless-dynamodb": "^0.2.54",
+    "serverless-dynamodb": "^0.2.56",
     "serverless-esbuild": "^1.52.1",
-    "serverless-offline": "^13.6.0",
+    "serverless-offline": "^14.4.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {

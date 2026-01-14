@@ -12,5 +12,5 @@ export const getUser: APIGatewayProxyHandler = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id: userId }: any = event.pathParameters
 
-  return await findById(userId)
+  return await findById(userId as string)
 }

@@ -3,7 +3,7 @@ service: crud-services
 provider:
   name: aws
   runtime: nodejs20.x
-  profile: personal
+  profile: ${self:custom.profiles.${self:provider.stage}, ''}
   stage: ${opt:stage, 'dev'}
   environment:
     NODE_ENV: production
@@ -25,7 +25,10 @@ package:
     - .github/**
     - .husky/**
 
-build:
+custom:
+  profiles:
+    dev: ""
+    prod: personal
   esbuild:
     minify: true
     bundle: true
@@ -33,8 +36,9 @@ build:
     target: node20
     external:
       - aws-sdk
-
-custom:
+    watch:
+      pattern: ["./index.ts", "src/**/*.ts"]
+      ignore: [".serverless/**/*", ".build"]
   dynamodb:
     # If you only want to use DynamoDB Local in some stages, declare them here
     stages:
@@ -58,6 +62,10 @@ functions:
       - http:
           path: users/{id}
           method: GET
+          request:
+            parameters:
+              paths:
+                id: true
   get-users:
     handler: src/functions/users/get.getUsers
     events:
@@ -70,19 +78,31 @@ functions:
       - http:
           path: users
           method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/user-schema.json)}
   update-users:
     handler: src/functions/users/update.updateUsers
     events:
       - http:
           path: users/{id}
           method: PUT
+          request:
+            parameters:
+              paths:
+                id: true
+            schemas:
+              application/json: ${file(schemas/user-schema.json)}
   delete-users:
     handler: src/functions/users/delete.deleteUsers
     events:
       - http:
           path: users/{id}
           method: DELETE
-
+          request:
+            parameters:
+              paths:
+                id: true
 resources:
   Resources:
     usersTable:
