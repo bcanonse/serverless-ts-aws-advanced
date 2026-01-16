@@ -103,6 +103,28 @@ functions:
             parameters:
               paths:
                 id: true
+  signedUrl:
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "s3:ListBucket"
+          - "s3:PutObject"
+        Resource:
+          - !Sub "${PublicAssetsBucket.Arn}/*"
+    handler: src/functions/signed-url/handler.handler
+    environment:
+      BUCKET: !Ref PublicAssetsBucket
+    package:
+      patterns:
+        - "signedurl/handler.ts"
+    events:
+      - http:
+          path: signedurl
+          method: GET
+          request:
+            parameters:
+              querystrings:
+                filename: true
 resources:
   Resources:
     usersTable:
