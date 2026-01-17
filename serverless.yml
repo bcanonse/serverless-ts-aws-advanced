@@ -19,26 +19,23 @@ plugins:
   - serverless-dynamodb
 
 package:
-  exclude:
-    - .env/**
-    - node_modules/**
-    - .github/**
-    - .husky/**
+  individually: true
+  patterns:
+    - "!*/**"
 
-custom:
-  profiles:
-    dev: ""
-    prod: personal
+build:
   esbuild:
     minify: true
     bundle: true
     platform: node
     target: node20
     external:
-      - aws-sdk
-    watch:
-      pattern: ["./index.ts", "src/**/*.ts"]
-      ignore: [".serverless/**/*", ".build"]
+      - sharp
+
+custom:
+  profiles:
+    dev: ""
+    prod: personal
   dynamodb:
     # If you only want to use DynamoDB Local in some stages, declare them here
     stages:
@@ -125,6 +122,15 @@ functions:
             parameters:
               querystrings:
                 filename: true
+  thumbGenerator:
+    handler: src/functions/thumbnail/handler.handler
+    events:
+      - s3:
+          bucket: !Ref PublicAssetsBucket
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: upload/
 resources:
   Resources:
     usersTable:

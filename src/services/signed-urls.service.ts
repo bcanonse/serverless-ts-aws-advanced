@@ -1,13 +1,11 @@
-import AWS from 'aws-sdk'
+import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { type Context, type APIGatewayEvent } from 'aws-lambda'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { s3 } from '../lib/s3'
 
 import responseObject from '../utils/response'
 
 import { type ResponseCustom } from '../types'
-
-const s3 = new AWS.S3({
-  signatureVersion: 'v4'
-})
 
 export const signedUrl = async (
   event: APIGatewayEvent,
@@ -16,17 +14,21 @@ export const signedUrl = async (
   try {
     const filename = event.queryStringParameters?.filename
 
-    if (filename == null) {
-      return responseObject(200, { message: 'filename is required' })
+    if (typeof filename !== 'string' || filename.trim() === '') {
+      return responseObject(400, { message: 'filename is required' })
     }
 
-    const signedUrl = await s3.getSignedUrlPromise('putObject', {
-      Key: `upload/${filename}`,
+    const command = new PutObjectCommand({
       Bucket: process.env.BUCKET,
-      Expires: 300
+      Key: `upload/${filename}`,
+      ContentType: 'application/octet-stream'
     })
 
-    return responseObject(200, { body: { signedUrl } })
+    const signedUrl = await getSignedUrl(s3, command, {
+      expiresIn: 300
+    })
+
+    return responseObject(200, { signedUrl })
   } catch (error) {
     return responseObject(500, { message: 'Error of signed url not handler' })
   }

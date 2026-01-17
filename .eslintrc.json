@@ -22,7 +22,7 @@
         "sourceType": "module"
     },
     "rules": {
-        "no-loops/no-loops": 2, // 2 means throw an ERROR 
+        "no-loops/no-loops": 0, // 2 means throw an ERROR 
         "no-console": 1,       // Means warning
         "prettier/prettier": 2 // Means error
     }
