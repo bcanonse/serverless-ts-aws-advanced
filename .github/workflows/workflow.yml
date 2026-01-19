@@ -29,12 +29,20 @@ jobs:
       options: --platform linux/arm64
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
+      - name: Install base tools (git, node, build deps)
         run: |
-          dnf install -y nodejs npm zip gcc-c++ make \
-          libpng-devel libjpeg-devel libwebp-devel
+          dnf install -y \
+            git \
+            nodejs \
+            npm \
+            zip \
+            gcc-c++ \
+            make \
+            libpng-devel \
+            libjpeg-devel \
+            libwebp-devel
+
+      - uses: actions/checkout@v4
 
       - name: Build sharp layer
         run: |
