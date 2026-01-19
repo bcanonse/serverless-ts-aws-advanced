@@ -25,8 +25,6 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -38,18 +36,16 @@ jobs:
       - name: Build Sharp Layer for ARM64
         run: |
           docker run --rm --platform linux/arm64 \
-            --entrypoint "" \
-            -v "$PWD:/work" \
-            public.ecr.aws/sam/build-nodejs20.x:arm64 \
+            -v "$PWD:/layer" \
+            public.ecr.aws/sam/build-nodejs20.x \
             bash -c "
-            yum install -y zip gcc-c++ make \
-              libpng-devel libjpeg-devel libwebp-devel &&
-            cd /work &&
+            mkdir -p /layer/build &&
+            cd /layer/build &&
             npm init -y &&
-            npm install sharp &&
+            npm install sharp --omit=dev &&
             mkdir -p nodejs &&
             mv node_modules nodejs/ &&
-            zip -r nodejs.zip nodejs
+            zip -r /layer/nodejs.zip nodejs
           "
 
       - name: Upload layer artifact
@@ -72,7 +68,7 @@ jobs:
 
       - name: NPM - Load cached venv
         id: cached-npm-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: npm-${{ runner.os }}-${{ hashFiles('**/package.json') }}
@@ -81,8 +77,8 @@ jobs:
         if: steps.cached-npm-dependencies.outputs.cache-hit != 'true'
         run: "npm install"
 
-      - name: Deploy using sls
-        run: "npx sls deploy --stage prod"
+      - name: Deploy using sls (v3)
+        run: npx serverless@3 deploy --stage prod
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
