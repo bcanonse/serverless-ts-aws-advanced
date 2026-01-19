@@ -45,8 +45,8 @@ build:
 
 custom:
   profiles:
-    dev: ""
-    prod: personal
+    dev: "personal"
+    prod: ""
   dynamodb:
     # If you only want to use DynamoDB Local in some stages, declare them here
     stages:
