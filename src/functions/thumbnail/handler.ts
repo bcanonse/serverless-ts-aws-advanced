@@ -69,7 +69,7 @@ const resizer = async (
   try {
     buffer = await sharp(imgBody).resize(newSize).toBuffer()
   } catch (error) {
-    console.log('Error to resizer', error)
+    console.log('Error to resizer image', error)
     return
   }
 
