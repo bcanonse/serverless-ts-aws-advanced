@@ -38,6 +38,7 @@ jobs:
       - name: Build Sharp Layer for ARM64
         run: |
           docker run --rm --platform linux/arm64 \
+            --entrypoint "" \
             -v "$PWD:/work" \
             public.ecr.aws/lambda/nodejs:20-arm64 \
             bash -c "
