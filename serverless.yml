@@ -1,5 +1,7 @@
 service: crud-services
 
+frameworkVersion: "3"
+
 provider:
   name: aws
   runtime: nodejs20.x
