@@ -1,6 +1,6 @@
 service: crud-services
 
-frameworkVersion: "^3"
+frameworkVersion: ">=3 <4"
 
 provider:
   name: aws
@@ -17,6 +17,7 @@ provider:
           Resource: !GetAtt usersTable.Arn
 
 plugins:
+  - serverless-esbuild
   - serverless-offline
   - serverless-dynamodb
 
@@ -34,7 +35,7 @@ layers:
     package:
       artifact: nodejs.zip
 
-build:
+custom:
   esbuild:
     minify: true
     bundle: true
@@ -42,8 +43,6 @@ build:
     target: node20
     external:
       - sharp
-
-custom:
   profiles:
     dev: "personal"
     prod: ""
