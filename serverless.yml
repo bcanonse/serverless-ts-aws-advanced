@@ -7,6 +7,9 @@ provider:
   runtime: nodejs20.x
   profile: ${self:custom.profiles.${self:provider.stage}, ''}
   stage: ${opt:stage, 'dev'}
+  apiGateway:
+    apiKeys:
+      - crud-services-apikey
   environment:
     NODE_ENV: production
   iam:
@@ -77,6 +80,7 @@ functions:
     handler: src/functions/users/get.getUsers
     events:
       - http:
+          private: true
           path: users
           method: GET
   create-users:
