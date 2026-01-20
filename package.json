@@ -35,8 +35,10 @@
     "husky": "^8.0.0",
     "prettier": "^3.3.3",
     "serverless": "^3.40.0",
+    "serverless-apigateway-service-proxy": "^2.2.2",
     "serverless-dynamodb": "0.2.56",
     "serverless-esbuild": "1.52.1",
+    "serverless-lift": "^1.33.3",
     "serverless-offline": "13.6.0",
     "typescript": "^5.5.4"
   },
