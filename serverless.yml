@@ -39,6 +39,7 @@ layers:
       artifact: nodejs.zip
 
 custom:
+  customAuthorizer: ${ssm:/aws/reference/secretsmanager/crud-api-security}
   esbuild:
     minify: true
     bundle: true
@@ -59,6 +60,10 @@ custom:
       migrate: true
 
 functions:
+  custom-authorizer:
+    environment:
+      JWT: ${self:custom.customAuthorizer.JWT}
+    handler: src/functions/authorizer/handler.handler
   hello-world:
     handler: src/functions/handler.handler
     events:
@@ -87,6 +92,9 @@ functions:
     handler: src/functions/users/create.createUsers
     events:
       - http:
+          authorizer:
+            name: custom-authorizer
+            resultTtlInSeconds: 15
           path: users
           method: POST
           request:
